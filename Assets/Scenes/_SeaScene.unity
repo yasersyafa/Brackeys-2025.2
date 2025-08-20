@@ -168,7 +168,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 746607286}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 11
   m_Type: 0
   m_Color: {r: 1, g: 0.94765973, b: 0.76862746, a: 1}
@@ -257,7 +257,7 @@ MonoBehaviour:
   _range: 35
   _detectableLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 64
 --- !u!1 &1214732101
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,8 +270,8 @@ GameObject:
   - component: {fileID: 1214732104}
   - component: {fileID: 1214732103}
   - component: {fileID: 1214732102}
-  m_Layer: 0
-  m_Name: Ground
+  m_Layer: 6
+  m_Name: Sea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -322,7 +322,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 141d9d6ca43b6c843965491604c6deff, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
