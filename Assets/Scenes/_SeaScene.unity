@@ -235,7 +235,7 @@ Transform:
   m_GameObject: {fileID: 746607286}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4, z: -10}
+  m_LocalPosition: {x: 0, y: 3, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -270,7 +270,7 @@ GameObject:
   - component: {fileID: 1214732104}
   - component: {fileID: 1214732103}
   - component: {fileID: 1214732102}
-  m_Layer: 6
+  m_Layer: 4
   m_Name: Sea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -516,7 +516,7 @@ GameObject:
   - component: {fileID: 1705287799}
   - component: {fileID: 1705287798}
   - component: {fileID: 1705287797}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
