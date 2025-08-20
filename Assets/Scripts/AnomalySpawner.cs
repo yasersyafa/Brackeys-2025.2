@@ -1,38 +1,49 @@
 using System.Collections.Generic;
-using Assets.Scripts.ScriptableObjects;
 using UnityEngine;
 
 public class AnomalySpawner : MonoBehaviour
 {
-    public List<AnomalySO> Anomalies { get; private set; } = new();
-    public float SpawnInterval { get; private set; } = 5f;
+    public static AnomalySpawner Instance;
+    [SerializeField]
+    private List<Anomaly> _anomalies = new();
+    [HideInInspector]
+    public Anomaly _anomaly;
+    [SerializeField]
+    private float _spawnInterval = 5f;
     public float SpawnTime { get; private set; }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    public List<Anomaly> GetAnomalies => _anomalies;
     void Awake()
     {
-        // shuffle the anomalies list
-        ShuffleHelper.Shuffle(Anomalies);
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
         SpawnTime = Random.Range(0f, 10f);
+        DontDestroyOnLoad(gameObject);
     }
     void Start()
     {
         // call the anomaly spawn method
-        InvokeRepeating(nameof(SpawnAnomaly), SpawnTime, SpawnInterval);
+        InvokeRepeating(nameof(SpawnAnomaly), SpawnTime, _spawnInterval);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SpawnAnomaly()
     {
-
-    }
-
-    public void SpawnAnomaly(AnomalySO anomaly)
-    {
+        if(_anomaly != null)
+        {
+            // If an anomaly is already spawned, do not spawn another one
+            Debug.Log("Anomaly already spawned, skipping spawn.");
+            return;
+        }
+        Anomaly anomaly = _anomalies[Random.Range(0, _anomalies.Count)];
+        _anomaly = anomaly;
         // Instantiate the anomaly prefab at a random position
-        Vector3 randomPosition = new(Random.Range(-10f, 10f), 0, 20);
-        Instantiate(anomaly.anomalyPrefab, randomPosition, Quaternion.identity);
+        Vector3 randomPosition = new(Random.Range(-10f, 10f), 2.7f, 20);
+        Instantiate(anomaly, randomPosition, anomaly.transform.rotation);
 
         // Log the anomaly identifier
-        Debug.Log($"Spawned Anomaly: {anomaly.anomalyIdentifier}");
+        Debug.Log($"Spawned Anomaly: {anomaly}");
     }
 }
