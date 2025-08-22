@@ -36,6 +36,8 @@ public class FlashLight : MonoBehaviour
         _isFlashLightOn = !_isFlashLightOn;
         _flashLight.enabled = _isFlashLightOn;
         Debug.Log($"Flashlight is {_isFlashLightOn}");
+        // play sound
+        AudioSource.PlayClipAtPoint(_flashLight.GetComponentInChildren<AudioSource>().clip, transform.position);
     }
     private void Update()
     {
