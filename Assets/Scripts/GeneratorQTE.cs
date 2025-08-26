@@ -3,14 +3,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
+
 public class GeneratorQTE : MonoBehaviour
 {
     [Header("UI References")]
-        public GameObject qtePanel; // panel utama QTE (parent dari elemen QTE)
-        public Slider progressBar;
-        public Image qteBackground; // background QTE (RectTransform)
-        public Image correctArea;   // area benar QTE (RectTransform)
-        public Image movingPoint;   // titik bergerak QTE (RectTransform)
+    public GameObject qtePanel; // panel utama QTE (parent dari elemen QTE)
+    public Slider progressBar;
+    public Image qteBackground; // background QTE (RectTransform)
+    public Image correctArea;   // area benar QTE (RectTransform)
+    public Image movingPoint;   // titik bergerak QTE (RectTransform)
+
+    [Header("Generator Objects (akan di-enable/disable)")]
+    public GameObject[] generatorObjects;
 
     [Header("QTE Settings")]
     public float totalDuration = 15f;
@@ -18,8 +22,10 @@ public class GeneratorQTE : MonoBehaviour
 
     private float progressTime;
     private bool isQTEActive = false;
+    private bool isGeneratorOn = false;
     private Coroutine qteCoroutine;
     private Coroutine progressCoroutine;
+    private Coroutine generatorOnCoroutine;
 
         void Start()
         {
@@ -29,7 +35,7 @@ public class GeneratorQTE : MonoBehaviour
 
     void Update()
     {
-        if (!isQTEActive && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+        if (!isQTEActive && !isGeneratorOn && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
         {
             StartQTE();
         }
@@ -37,8 +43,8 @@ public class GeneratorQTE : MonoBehaviour
 
     public void StartQTE()
     {
-            if (qtePanel != null) qtePanel.SetActive(true);
-            progressBar.value = 0f;
+        if (qtePanel != null) qtePanel.SetActive(true);
+        progressBar.value = 0f;
         progressTime = 0f;
         isQTEActive = true;
         if (progressCoroutine != null) StopCoroutine(progressCoroutine);
@@ -151,6 +157,29 @@ public class GeneratorQTE : MonoBehaviour
         if (progressCoroutine != null) StopCoroutine(progressCoroutine);
         if (qteCoroutine != null) StopCoroutine(qteCoroutine);
 
-        // TODO: Trigger event generator selesai
+        // Nyalakan generator
+        SetGeneratorState(true);
+        if (generatorOnCoroutine != null) StopCoroutine(generatorOnCoroutine);
+        generatorOnCoroutine = StartCoroutine(GeneratorOnTimer());
+    }
+
+    void SetGeneratorState(bool on)
+    {
+        isGeneratorOn = on;
+        if (generatorObjects != null)
+        {
+            foreach (var obj in generatorObjects)
+            {
+                if (obj != null) obj.SetActive(on);
+            }
+        }
+    }
+
+    IEnumerator GeneratorOnTimer()
+    {
+        // Durasi random 1-2 menit
+        float duration = Random.Range(60f, 121f);
+        yield return new WaitForSeconds(duration);
+        SetGeneratorState(false);
     }
 }
