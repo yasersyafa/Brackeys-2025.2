@@ -37,8 +37,23 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Screen_Boat
+    second: {fileID: 2100000, guid: 84dfb538a2149fd41a3d160bdc44881e, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: Steel_Boat
     second: {fileID: 2100000, guid: 7720457f33bf9654da2e971f5d390ef8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Steer_Boat
+    second: {fileID: 2100000, guid: 9489a11e45cfbf546b4f0d632cbec86b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: String_Boat
+    second: {fileID: 2100000, guid: 035510023d9ea1643b68d9ff78aa536f, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

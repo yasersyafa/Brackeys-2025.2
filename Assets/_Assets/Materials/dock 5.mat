@@ -112,7 +112,7 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _Metalic: 0.23
+    - _Metalic: 1
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -126,7 +126,7 @@ Material:
     - _SrcBlendAlpha: 1
     - _StrokeBlendingNoiseScale: 500
     - _StrokeBlendingNoiseStrength: 0.5
-    - _StrokeRandomness: 0.837
+    - _StrokeRandomness: 0.448
     - _StrokeScale: 5
     - _Surface: 0
     - _UseBlendingNoise: 1
