@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using System;
 
 
 public class GeneratorQTE : MonoBehaviour
@@ -27,6 +28,13 @@ public class GeneratorQTE : MonoBehaviour
     private Coroutine progressCoroutine;
     private Coroutine generatorOnCoroutine;
     public static bool IsQTEActive = false;
+
+    // Public property to check generator state for JumpscareSystem
+    public bool IsGeneratorOn => isGeneratorOn;
+    
+    // Events for generator state changes
+    public static event Action OnGeneratorTurnedOff;
+    public static event Action OnGeneratorTurnedOn;
 
     [Header("Navigation Panel")]
     public GameObject navigationPanel;
@@ -76,7 +84,7 @@ public class GeneratorQTE : MonoBehaviour
     {
         while (progressTime < totalDuration)
         {
-            float delay = Random.Range(1, 4); // 1,2,3 detik
+            float delay = UnityEngine.Random.Range(1, 4); // 1,2,3 detik
             HideQTEElements();
             yield return new WaitForSeconds(delay);
             yield return StartCoroutine(QTESession());
@@ -88,8 +96,8 @@ public class GeneratorQTE : MonoBehaviour
         // Randomize speed and width
         float[] speeds = { 130f, 150f, 170f };
         int[] widths = { 70, 120, 150 };
-        float speed = speeds[Random.Range(0, speeds.Length)];
-        int width = widths[Random.Range(0, widths.Length)];
+        float speed = speeds[UnityEngine.Random.Range(0, speeds.Length)];
+        int width = widths[UnityEngine.Random.Range(0, widths.Length)];
 
         // Setup correct area (width random, posisi X tetap)
         RectTransform bgRect = qteBackground.rectTransform;
@@ -175,7 +183,9 @@ public class GeneratorQTE : MonoBehaviour
 
     void SetGeneratorState(bool on)
     {
+        bool wasOn = isGeneratorOn;
         isGeneratorOn = on;
+        
         if (generatorObjects != null)
         {
             foreach (var obj in generatorObjects)
@@ -183,12 +193,24 @@ public class GeneratorQTE : MonoBehaviour
                 if (obj != null) obj.SetActive(on);
             }
         }
+        
+        // Fire events when state changes
+        if (wasOn && !on)
+        {
+            OnGeneratorTurnedOff?.Invoke();
+            Debug.Log("Generator turned OFF - Event fired");
+        }
+        else if (!wasOn && on)
+        {
+            OnGeneratorTurnedOn?.Invoke();
+            Debug.Log("Generator turned ON - Event fired");
+        }
     }
 
     IEnumerator GeneratorOnTimer()
     {
         // Durasi random 1-2 menit
-        float duration = Random.Range(60f, 121f);
+        float duration = UnityEngine.Random.Range(60f, 121f);
         yield return new WaitForSeconds(duration);
         SetGeneratorState(false);
     }
