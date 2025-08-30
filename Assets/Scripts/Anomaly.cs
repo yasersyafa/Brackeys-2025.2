@@ -60,6 +60,10 @@ public class Anomaly : MonoBehaviour
         transform.position = targetPos;
         _isAlive = false;
         AnomalySpawner.Instance._anomaly = null;
+        
+        // Fire the event when anomaly is destroyed
+        AnomalySpawner.Instance.NotifyAnomalyDestroyed();
+        
         Destroy(gameObject);
     }
 }

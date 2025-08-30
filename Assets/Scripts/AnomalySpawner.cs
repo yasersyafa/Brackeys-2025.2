@@ -1,9 +1,11 @@
-using System.Collections.Generic;
+    using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class AnomalySpawner : MonoBehaviour
 {
     public static AnomalySpawner Instance;
+    
     [SerializeField]
     private List<Anomaly> _anomalies = new();
     [HideInInspector]
@@ -12,6 +14,10 @@ public class AnomalySpawner : MonoBehaviour
     private float _spawnInterval = 5f;
     public float SpawnTime { get; private set; }
     public List<Anomaly> GetAnomalies => _anomalies;
+    
+    // Events for anomaly state changes
+    public static event Action OnAnomalySpawned;
+    public static event Action OnAnomalyDestroyed;
     void Awake()
     {
         if (Instance != null)
@@ -20,7 +26,7 @@ public class AnomalySpawner : MonoBehaviour
             return;
         }
         Instance = this;
-        SpawnTime = Random.Range(0f, 10f);
+        SpawnTime = UnityEngine.Random.Range(0f, 10f);
         DontDestroyOnLoad(gameObject);
     }
     void Start()
@@ -37,13 +43,25 @@ public class AnomalySpawner : MonoBehaviour
             Debug.Log("Anomaly already spawned, skipping spawn.");
             return;
         }
-        Anomaly anomaly = _anomalies[Random.Range(0, _anomalies.Count)];
+        Anomaly anomaly = _anomalies[UnityEngine.Random.Range(0, _anomalies.Count)];
         _anomaly = anomaly;
         // Instantiate the anomaly prefab at a random position
-        Vector3 randomPosition = new(Random.Range(-10f, 10f), 2.7f, 20);
+        Vector3 randomPosition = new(UnityEngine.Random.Range(-10f, 10f), 2.7f, 20);
         Instantiate(anomaly, randomPosition, anomaly.transform.rotation);
+
+        // Fire the event
+        OnAnomalySpawned?.Invoke();
 
         // Log the anomaly identifier
         Debug.Log($"Spawned Anomaly: {anomaly}");
+    }
+    
+    /// <summary>
+    /// Call this when an anomaly is destroyed
+    /// </summary>
+    public void NotifyAnomalyDestroyed()
+    {
+        OnAnomalyDestroyed?.Invoke();
+        Debug.Log("Anomaly destroyed event fired");
     }
 }
