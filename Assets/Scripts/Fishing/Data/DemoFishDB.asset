@@ -12,14 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9ac18390aa3b96449f56b40d81ffb73, type: 3}
   m_Name: DemoFishDB
   m_EditorClassIdentifier: 
-  commonFish:
-  - {fileID: 11400000, guid: 44d91767b717d594ead61a20d762e285, type: 2}
-  - {fileID: 11400000, guid: 44d91767b717d594ead61a20d762e285, type: 2}
-  rareFish:
-  - {fileID: 11400000, guid: 869856e228ca4a3469312fbb44f62dda, type: 2}
-  - {fileID: 11400000, guid: 1959d767a666d1340965ebadc4f20732, type: 2}
+  commonFish: []
+  rareFish: []
   legendaryFish:
-  - {fileID: 11400000, guid: df9200417c17ec74d9b9a97ecd33c62c, type: 2}
   - {fileID: 11400000, guid: df9200417c17ec74d9b9a97ecd33c62c, type: 2}
   commonDropRate: 70
   rareDropRate: 20

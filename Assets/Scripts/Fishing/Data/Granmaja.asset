@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d3ade84d774a7ab46a4022bf8a98b449, type: 3}
-  m_Name: Deadfish
+  m_Name: Granmaja
   m_EditorClassIdentifier: 
-  fishName: Deadfish
+  fishName: Granmaja
   rarity: 5
   fishIcon: {fileID: 0}
-  fishPrefab: {fileID: 2227402159327873520, guid: 609faae293142e84ab852aba407b6e61, type: 3}
+  fishPrefab: {fileID: 2227402159327873520, guid: f56b9513732f1c648a839765bbed1e60, type: 3}
   baseHP: 100
   strength: 1
   weight: 1
