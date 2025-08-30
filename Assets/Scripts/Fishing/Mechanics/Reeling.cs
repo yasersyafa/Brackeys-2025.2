@@ -178,7 +178,6 @@ public class Reeling : MonoBehaviour
         if (mouse != null)
         {
             lastMousePosition = mouse.position.ReadValue();
-            Debug.Log($"Reeling: Initialized mouse position at {lastMousePosition}");
         }
         
         // Get target rotations from current fish if possible
@@ -223,15 +222,12 @@ public class Reeling : MonoBehaviour
                     Vector3[] corners = new Vector3[4];
                     reelingWheel.GetWorldCorners(corners);
                     Vector3 centerWorld = (corners[0] + corners[2]) * 0.5f; // Average of opposite corners
-                    wheelCenter = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera ?? Camera.main, centerWorld);
-                    
-                    Debug.Log($"Reeling: Wheel center calculated at {wheelCenter} using UI corners");
+                    wheelCenter = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera ?? Camera.main, centerWorld);                   
                 }
                 else
                 {
                     // Fallback to screen center if canvas not found
                     wheelCenter = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
-                    Debug.Log($"Reeling: Using screen center fallback {wheelCenter}");
                 }
             }
             else
@@ -540,13 +536,7 @@ public class Reeling : MonoBehaviour
         if (reelBroken) return;
         
         if (isSpinning)
-        {
-            // Debug: Log stress increase when it happens
-            if (Time.time % 1f < Time.deltaTime) // Log every second
-            {
-                Debug.Log($"Reeling: Stress increasing - isSpinning: {isSpinning}, isStruggling: {isFishStruggling}, currentSpinSpeed: {currentSpinSpeed:F2}, currentReelStress: {currentReelStress:F2}");
-            }
-            
+        {            
             // Increase stress when spinning using dynamic rate (fish weight affects this)
             float stressIncrease = dynamicStressIncreaseRate * Time.deltaTime;
             // Faster spinning = more stress
@@ -651,7 +641,6 @@ public class Reeling : MonoBehaviour
         // Start wheel shake animation
         StartWheelShake();
         
-        Debug.Log("Fish started struggling!");
         OnFishStruggleStarted?.Invoke();
     }
     
@@ -665,7 +654,6 @@ public class Reeling : MonoBehaviour
         // Stop wheel shake animation
         StopWheelShake();
         
-        Debug.Log("Fish stopped struggling!");
         OnFishStruggleEnded?.Invoke();
     }
     

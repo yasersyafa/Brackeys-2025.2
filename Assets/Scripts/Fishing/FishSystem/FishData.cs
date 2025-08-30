@@ -37,7 +37,7 @@ public class FishData : ScriptableObject
     {
         float rarityMultiplier = GetRarityMultiplier();
         // Improved strength scaling: stronger fish require more rotations
-        float strengthMultiplier = 0.5f + (strength * 0.75f); // Scales from 1.25 at strength=1 to higher values
+        float strengthMultiplier = 0.5f + (strength * 0.1f); // Scales from 1.25 at strength=1 to higher values
         
         int baseRotations = Random.Range(minRotationsToReel, maxRotationsToReel + 1); // Random rotations within range
         int finalRotations = Mathf.RoundToInt(baseRotations * rarityMultiplier * strengthMultiplier);

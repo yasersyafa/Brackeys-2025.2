@@ -339,8 +339,6 @@ public class FishSpawner : MonoBehaviour
         if (fishRigidbody != null)
         {
             fishRigidbody.isKinematic = true; // Make kinematic so it follows parent transform
-            fishRigidbody.linearVelocity = Vector3.zero;
-            fishRigidbody.angularVelocity = Vector3.zero;
         }
         
         // Parent fish to bait so it follows bait movement

@@ -22,7 +22,6 @@ public class FlashLight : MonoBehaviour
     {
         _inputActions.Player.Enable();
         _inputActions.Player.Interact.performed += HandleFlashLight;
-        Debug.Log("Hello World");
     }
 
     private void OnDisable()

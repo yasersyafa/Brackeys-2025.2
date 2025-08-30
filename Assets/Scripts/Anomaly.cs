@@ -60,7 +60,6 @@ public class Anomaly : MonoBehaviour
         transform.position = targetPos;
         _isAlive = false;
         AnomalySpawner.Instance._anomaly = null;
-        Debug.Log($"Anomaly {gameObject.name} destroyed by flashlight!");
         Destroy(gameObject);
     }
 }

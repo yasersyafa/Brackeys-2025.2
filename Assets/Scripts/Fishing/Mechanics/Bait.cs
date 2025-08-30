@@ -156,7 +156,6 @@ public class Bait : MonoBehaviour
         if (isBeingReeled)
         {
             isFishStruggling = true;
-            Debug.Log("Bait: Fish started struggling - applying continuous force away!");
         }
     }
 
@@ -165,7 +164,6 @@ public class Bait : MonoBehaviour
         if (isBeingReeled)
         {
             isFishStruggling = false;
-            Debug.Log("Bait: Fish stopped struggling - back to normal reeling");
         }
     }
 
@@ -206,12 +204,6 @@ public class Bait : MonoBehaviour
         
         // Add some upward force to make the struggle more dynamic
         rb.AddForce(Vector3.up * struggleUpwardForce, ForceMode.Force);
-        
-        // Debug info for struggle movement
-        if (Time.fixedTime % 0.5f < Time.fixedDeltaTime) // Log every 0.5 seconds
-        {
-            Debug.Log($"Fish Struggling - Continuous force: {struggleForce}, Position: {transform.position.z:F2}");
-        }
     }
 
     private void ApplyReelingForce(float horizontalForce, float upwardForce)
@@ -246,8 +238,6 @@ public class Bait : MonoBehaviour
     {
         // Apply a stronger force when a full rotation is completed (using configurable values)
         ApplyReelingForce(rotationBoostForce, rotationBoostUpForce);
-
-        Debug.Log($"Rotation completed - applying boost! Force: {rotationBoostForce}, Up: {rotationBoostUpForce}");
     }
 
     public void SetReelingTarget(Transform target)

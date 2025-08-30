@@ -686,9 +686,9 @@ Transform:
   m_GameObject: {fileID: 158081039}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.78, z: -5}
-  m_LocalScale: {x: 10, y: 10, z: 10}
-  m_ConstrainProportionsScale: 1
+  m_LocalPosition: {x: 0, y: 0.5, z: -5}
+  m_LocalScale: {x: 40, y: 5, z: 40}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2105,13 +2105,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1319618591}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.017190825, y: -0.99985224, z: 0.0000000013969838, w: 0.000000014901159}
+  m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
   m_LocalPosition: {x: -0.33945373, y: 6.2937403, z: -12.991001}
   m_LocalScale: {x: 1.8710701, y: 1.5592248, z: 1.5592253}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: -180, z: -1.97}
+  m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
 --- !u!1 &1336472230
 GameObject:
   m_ObjectHideFlags: 0
@@ -3051,7 +3051,7 @@ MonoBehaviour:
   enableProgressDecay: 1
   minSpinSpeed: 90
   spinDecay: 5
-  targetRotations: 5
+  targetRotations: 20
   rotationTolerance: 30
   maxReelStress: 100
   baseStressIncreaseRate: 10
