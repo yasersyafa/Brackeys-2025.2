@@ -12,10 +12,12 @@ public class FishingArea : MonoBehaviour
     [SerializeField] private float castAngle = 45f;
 
     [Header("UI References")]
+    public GameObject panelFishing;
     [SerializeField] private GameObject baitUI;
 
     private Bait baitScript;
     private bool isBaitCast = false;
+    public static bool IsFishingActive = false;
 
     void Start()
     {
@@ -45,6 +47,9 @@ public class FishingArea : MonoBehaviour
         // 3. Simple space input using new Input System
         if (Keyboard.current.spaceKey.wasPressedThisFrame)
         {
+            // Hanya izinkan cast jika player di area Fishing
+            var player = FindFirstObjectByType<PlayerMovement>();
+            if (player != null && !player.isFishingArea) return;
             if (!isBaitCast && baitGameObject != null)
             {
                 CastBait();
@@ -52,7 +57,7 @@ public class FishingArea : MonoBehaviour
             else if (isBaitCast)
             {
                 // If bait is already cast, reel it back in
-                ResetBait();
+                // ResetBait();
             }
         }
 
@@ -70,10 +75,12 @@ public class FishingArea : MonoBehaviour
 
     private void CastBait()
     {
-        // 1. Set active the bait gameObject
+        // 1. Set active the bait gameObject\
+        panelFishing.SetActive(false);
         baitGameObject.SetActive(true);
         ropeGameObject.SetActive(true);
         baitUI.SetActive(true);
+        IsFishingActive = true;
         
         // Position bait at cast point
         baitGameObject.transform.position = castPoint.position;
@@ -99,8 +106,10 @@ public class FishingArea : MonoBehaviour
 
         baitGameObject.SetActive(false);
         ropeGameObject.SetActive(false);
+        panelFishing.SetActive(true);
         baitUI.SetActive(false);
         isBaitCast = false;
+        IsFishingActive = false;
         Debug.Log("Bait reeled in!");
     }
 

@@ -41,7 +41,7 @@ public class GeneratorQTE : MonoBehaviour
     {
         var player = FindFirstObjectByType<PlayerMovement>();
         if (player != null && !player.isGeneratorArea) return;
-        if (!isQTEActive && !isGeneratorOn && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+        if (!isQTEActive && !isGeneratorOn && Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             StartQTE();
         }

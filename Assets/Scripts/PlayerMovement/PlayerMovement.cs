@@ -58,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
                 if (!GeneratorQTE.IsQTEActive) {
                     if (panelSteer != null) panelSteer.SetActive(currentArea == Area.Steer);
                     if (panelFlashlight != null) panelFlashlight.SetActive(currentArea == Area.Flashlight);
-                    if (panelFishing != null) panelFishing.SetActive(currentArea == Area.Fishing);
+                    if (panelFishing != null) panelFishing.SetActive(currentArea == Area.Fishing && !FishingArea.IsFishingActive);
                     if (panelGenerator != null) panelGenerator.SetActive(currentArea == Area.Generator);
                 }
                 if (flashlightRod != null) flashlightRod.SetActive(currentArea == Area.Flashlight);
