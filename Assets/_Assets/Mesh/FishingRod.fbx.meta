@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 12780e1172faa3646988160ea9aad34f
+guid: 9949ac1ccad9fb348aec52d013fbe5a4
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,43 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Body_Boat
-    second: {fileID: 2100000, guid: e7da5f948443cc14cbed2c86247189f5, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Dock_Boat
-    second: {fileID: 2100000, guid: a0172b940a0db2f4ca4e95fd113b026b, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Generator_Boat
-    second: {fileID: 2100000, guid: d0462c90bd3e97b4e9479a4b5071c745, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Glass_Boat
-    second: {fileID: 2100000, guid: 89798776f4af1544a8a53142bafec3a0, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Pull_Boat
-    second: {fileID: 2100000, guid: 799507a5e942ec4468ef227b282390bf, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
       name: Rod_Boat
     second: {fileID: 2100000, guid: c39c5ba1889619348b7b0cb2b4e4e62a, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Screen_Boat
-    second: {fileID: 2100000, guid: 84dfb538a2149fd41a3d160bdc44881e, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: String_Boat
-    second: {fileID: 2100000, guid: 035510023d9ea1643b68d9ff78aa536f, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
