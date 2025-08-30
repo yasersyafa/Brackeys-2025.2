@@ -26,6 +26,10 @@ public class GeneratorQTE : MonoBehaviour
     private Coroutine qteCoroutine;
     private Coroutine progressCoroutine;
     private Coroutine generatorOnCoroutine;
+    public static bool IsQTEActive = false;
+
+    [Header("Navigation Panel")]
+    public GameObject navigationPanel;
 
         void Start()
         {
@@ -35,6 +39,8 @@ public class GeneratorQTE : MonoBehaviour
 
     void Update()
     {
+        var player = FindFirstObjectByType<PlayerMovement>();
+        if (player != null && !player.isGeneratorArea) return;
         if (!isQTEActive && !isGeneratorOn && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
         {
             StartQTE();
@@ -43,7 +49,9 @@ public class GeneratorQTE : MonoBehaviour
 
     public void StartQTE()
     {
+        IsQTEActive = true;
         if (qtePanel != null) qtePanel.SetActive(true);
+        if (navigationPanel != null) navigationPanel.SetActive(false);
         progressBar.value = 0f;
         progressTime = 0f;
         isQTEActive = true;
@@ -151,9 +159,11 @@ public class GeneratorQTE : MonoBehaviour
 
     void EndQTE()
     {
+        IsQTEActive = false;
         isQTEActive = false;
         qtePanel.SetActive(false);
         HideQTEElements();
+        if (navigationPanel != null) navigationPanel.SetActive(true);
         if (progressCoroutine != null) StopCoroutine(progressCoroutine);
         if (qteCoroutine != null) StopCoroutine(qteCoroutine);
 

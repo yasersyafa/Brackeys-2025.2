@@ -33,14 +33,18 @@ public class FlashLight : MonoBehaviour
 
     private void HandleFlashLight(InputAction.CallbackContext context)
     {
+        var player = FindFirstObjectByType<PlayerMovement>();
+        if (player != null && !player.isFlashlightArea) return;
         _isFlashLightOn = !_isFlashLightOn;
         _flashLight.enabled = _isFlashLightOn;
         Debug.Log($"Flashlight is {_isFlashLightOn}");
-        // play sound
         AudioSource.PlayClipAtPoint(_flashLight.GetComponentInChildren<AudioSource>().clip, transform.position);
     }
+
     private void Update()
     {
+        var player = FindFirstObjectByType<PlayerMovement>();
+        if (player != null && !player.isFlashlightArea) return;
         if (_isFlashLightOn)
         {
             DetectObjectInFlashLight();

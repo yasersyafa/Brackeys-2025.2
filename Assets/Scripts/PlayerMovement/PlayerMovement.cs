@@ -12,6 +12,12 @@ public class PlayerMovement : MonoBehaviour
     public enum Area { Steer, Flashlight, Fishing, Generator }
     public Area currentArea = Area.Steer;
 
+    // Flag area aktif
+    public bool isSteerArea => currentArea == Area.Steer;
+    public bool isFlashlightArea => currentArea == Area.Flashlight;
+    public bool isFishingArea => currentArea == Area.Fishing;
+    public bool isGeneratorArea => currentArea == Area.Generator;
+
     [Header("Area Panels")]
     public GameObject panelSteer;
     public GameObject panelFlashlight;
@@ -21,6 +27,12 @@ public class PlayerMovement : MonoBehaviour
     private float targetYRotation = 0f;
     private bool isRotatingToTarget = false;
     public float smoothRotateSpeed = 360f; // derajat per detik
+
+    [Header("Other Settings")]
+    public GameObject flashlightRod;
+
+    // Tambahan: flag idle di area flashlight
+    private bool isIdleInFlashlightArea = false;
 
     void Start()
     {
@@ -42,10 +54,14 @@ public class PlayerMovement : MonoBehaviour
                 transform.eulerAngles = new Vector3(transform.eulerAngles.x, targetYRotation, transform.eulerAngles.z);
                 isRotatingToTarget = false;
                 // Aktifkan panel area baru setelah sampai tujuan
-                if (panelSteer != null) panelSteer.SetActive(currentArea == Area.Steer);
-                if (panelFlashlight != null) panelFlashlight.SetActive(currentArea == Area.Flashlight);
-                if (panelFishing != null) panelFishing.SetActive(currentArea == Area.Fishing);
-                if (panelGenerator != null) panelGenerator.SetActive(currentArea == Area.Generator);
+                // Jangan aktifkan panel navigasi jika QTE sedang aktif
+                if (!GeneratorQTE.IsQTEActive) {
+                    if (panelSteer != null) panelSteer.SetActive(currentArea == Area.Steer);
+                    if (panelFlashlight != null) panelFlashlight.SetActive(currentArea == Area.Flashlight);
+                    if (panelFishing != null) panelFishing.SetActive(currentArea == Area.Fishing);
+                    if (panelGenerator != null) panelGenerator.SetActive(currentArea == Area.Generator);
+                }
+                if (flashlightRod != null) flashlightRod.SetActive(currentArea == Area.Flashlight);
             }
         }
         // Cek jika sudah sampai tujuan dan belum rotasi manual
@@ -79,6 +95,7 @@ public class PlayerMovement : MonoBehaviour
         else if (area == Area.Generator) target = generatorArea;
         agent.SetDestination(target.position);
         isRotatingToTarget = false;
+        if (flashlightRod != null) flashlightRod.SetActive(false);
 
         // Nonaktifkan semua panel saat mulai pindah area
         if (panelSteer != null) panelSteer.SetActive(false);
