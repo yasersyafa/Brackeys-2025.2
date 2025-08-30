@@ -23,7 +23,7 @@ public class GeneratorQTE : MonoBehaviour
 
     private float progressTime;
     private bool isQTEActive = false;
-    private bool isGeneratorOn = false;
+    private bool isGeneratorOn = true;
     private Coroutine qteCoroutine;
     private Coroutine progressCoroutine;
     private Coroutine generatorOnCoroutine;
@@ -43,6 +43,9 @@ public class GeneratorQTE : MonoBehaviour
         {
             if (qtePanel != null) qtePanel.SetActive(false);
             HideQTEElements();
+            SetGeneratorState(true); // Generator ON saat awal
+            if (generatorOnCoroutine != null) StopCoroutine(generatorOnCoroutine);
+            generatorOnCoroutine = StartCoroutine(GeneratorOnTimer());
         }
 
     void Update()
