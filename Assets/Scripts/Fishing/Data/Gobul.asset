@@ -15,7 +15,7 @@ MonoBehaviour:
   fishName: Gobul
   rarity: 5
   fishIcon: {fileID: 0}
-  fishPrefab: {fileID: 2227402159327873520, guid: 3ade6058e02d85948b60a57317d4046f, type: 3}
+  fishPrefab: {fileID: 2227402159327873520, guid: f56b9513732f1c648a839765bbed1e60, type: 3}
   baseHP: 100
   strength: 1
   weight: 1

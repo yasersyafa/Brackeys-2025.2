@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   commonFish:
   - {fileID: 11400000, guid: 44d91767b717d594ead61a20d762e285, type: 2}
-  - {fileID: 11400000, guid: 3ccb842415a360c47971563253ed4342, type: 2}
+  - {fileID: 11400000, guid: 44d91767b717d594ead61a20d762e285, type: 2}
   rareFish:
   - {fileID: 11400000, guid: 869856e228ca4a3469312fbb44f62dda, type: 2}
   - {fileID: 11400000, guid: 1959d767a666d1340965ebadc4f20732, type: 2}
   legendaryFish:
   - {fileID: 11400000, guid: df9200417c17ec74d9b9a97ecd33c62c, type: 2}
-  - {fileID: 11400000, guid: 0bb352b8f8d4808419f10f2ba2733d5f, type: 2}
+  - {fileID: 11400000, guid: df9200417c17ec74d9b9a97ecd33c62c, type: 2}
   commonDropRate: 70
   rareDropRate: 20
   legendaryDropRate: 10

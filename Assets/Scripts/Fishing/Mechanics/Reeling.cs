@@ -212,10 +212,27 @@ public class Reeling : MonoBehaviour
         {
             reelingCanvas.SetActive(true);
             
-            // Calculate wheel center after UI is active
-            if (reelingWheel != null && playerCamera != null)
+            // Calculate wheel center using UI coordinates instead of world-to-screen conversion
+            if (reelingWheel != null)
             {
-                wheelCenter = RectTransformUtility.WorldToScreenPoint(playerCamera, reelingWheel.position);
+                // Get the canvas for proper coordinate conversion
+                Canvas canvas = reelingCanvas.GetComponent<Canvas>();
+                if (canvas != null)
+                {
+                    // Use direct screen position approach: get world corners and find center
+                    Vector3[] corners = new Vector3[4];
+                    reelingWheel.GetWorldCorners(corners);
+                    Vector3 centerWorld = (corners[0] + corners[2]) * 0.5f; // Average of opposite corners
+                    wheelCenter = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera ?? Camera.main, centerWorld);
+                    
+                    Debug.Log($"Reeling: Wheel center calculated at {wheelCenter} using UI corners");
+                }
+                else
+                {
+                    // Fallback to screen center if canvas not found
+                    wheelCenter = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+                    Debug.Log($"Reeling: Using screen center fallback {wheelCenter}");
+                }
             }
             else
             {
@@ -242,6 +259,9 @@ public class Reeling : MonoBehaviour
         wheelShakeSequence?.Kill();
         DOTween.Kill(this);
         
+        // Clear all fish data
+        ClearAllFishData("reeling stopped");
+        
         // Hide reeling UI
         if (reelingCanvas != null)
         {
@@ -262,10 +282,21 @@ public class Reeling : MonoBehaviour
         // Always track mouse movement when reeling is active (no click required)
         if (isReelingActive)
         {
-            // Ensure we have valid wheel center
-            if (wheelCenter == Vector2.zero && reelingWheel != null && playerCamera != null)
+            // Ensure we have valid wheel center - recalculate if needed using UI approach
+            if (wheelCenter == Vector2.zero && reelingWheel != null)
             {
-                wheelCenter = RectTransformUtility.WorldToScreenPoint(playerCamera, reelingWheel.position);
+                Canvas canvas = reelingCanvas?.GetComponent<Canvas>();
+                if (canvas != null)
+                {
+                    Vector3[] corners = new Vector3[4];
+                    reelingWheel.GetWorldCorners(corners);
+                    Vector3 centerWorld = (corners[0] + corners[2]) * 0.5f;
+                    wheelCenter = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera ?? Camera.main, centerWorld);
+                }
+                else
+                {
+                    wheelCenter = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+                }
             }
             
             // Skip calculation if wheel center is still invalid
@@ -423,6 +454,9 @@ public class Reeling : MonoBehaviour
         // Use animation curve for smooth scaling from 1 to 0
         float targetScale = wheelScaleCurve.Evaluate(currentProgress);
         
+        // Apply minimum scale constraint of 0.2
+        targetScale = Mathf.Max(targetScale, 0.2f);
+        
         // Smooth scale animation
         reelingWheel.DOScale(targetScale, wheelScaleSpeed)
             .SetEase(Ease.OutCubic);
@@ -436,7 +470,42 @@ public class Reeling : MonoBehaviour
         // Check if we've completed enough rotations
         if (totalRotations >= targetRotations)
         {
-            // Fish should be caught - this will be handled by FishManager
+            // Catch the fish when target rotations reached
+            var fishManager = FindFirstObjectByType<FishManager>();
+            if (fishManager != null && fishManager.GetCurrentFish() != null)
+            {
+                fishManager.GetCurrentFish().CatchFish();
+            }
+            
+            // Clear all fish data
+            ClearAllFishData("target rotations reached");
+            
+            // Stop reeling system
+            isReelingActive = false;
+            
+            // Kill any running DOTween sequences
+            wheelSpinSequence?.Kill();
+            uiUpdateSequence?.Kill();
+            wheelScaleSequence?.Kill();
+            wheelShakeSequence?.Kill();
+            DOTween.Kill(this);
+            
+            // Hide reeling UI
+            if (reelingCanvas != null)
+            {
+                reelingCanvas.SetActive(false);
+            }
+            
+            // Reset bait after catching fish
+            var fishingArea = FindFirstObjectByType<FishingArea>();
+            if (fishingArea != null)
+            {
+                fishingArea.ResetBait();
+            }
+            
+            // Notify that reeling is completed
+            OnReelingCompleted?.Invoke();
+            
             return;
         }
         
@@ -497,11 +566,6 @@ public class Reeling : MonoBehaviour
         }
         else
         {
-            // Debug: Log stress decrease occasionally
-            if (Time.time % 2f < Time.deltaTime) // Log every 2 seconds
-            {
-                Debug.Log($"Reeling: Stress decreasing - isSpinning: {isSpinning}, isStruggling: {isFishStruggling}, currentReelStress: {currentReelStress:F2}");
-            }
             
             // Increase time not spinning for dynamic decrease rate
             stressNotSpinningTime += Time.deltaTime;
@@ -656,12 +720,18 @@ public class Reeling : MonoBehaviour
         
         Debug.Log("Reel broke! Fish escaped and bait reset!");
         
-        // Trigger fish escape
+        // Trigger fish escape and clear fish data
         var fishManager = FindFirstObjectByType<FishManager>();
-        if (fishManager != null && fishManager.GetCurrentFish() != null)
+        if (fishManager != null)
         {
-            fishManager.ForceFishEscape();
+            if (fishManager.GetCurrentFish() != null)
+            {
+                fishManager.ForceFishEscape();
+            }
         }
+        
+        // Clear all fish data
+        ClearAllFishData("reel broke");
 
         var FishingArea = FindFirstObjectByType<FishingArea>();
         if (FishingArea != null)
@@ -810,6 +880,29 @@ public class Reeling : MonoBehaviour
     public float GetStruggleTimeRemaining()
     {
         return struggleTimer;
+    }
+    
+    // Helper method to clear all fish data consistently
+    private void ClearAllFishData(string context = "")
+    {
+        // Clear fish data from FishManager
+        var fishManager = FindFirstObjectByType<FishManager>();
+        if (fishManager != null)
+        {
+            fishManager.ClearCurrentFish();
+        }
+        
+        // Clear fish data from FishSpawner
+        var fishSpawner = FindFirstObjectByType<FishSpawner>();
+        if (fishSpawner != null)
+        {
+            fishSpawner.StopSpawning(); // This will clear fish data
+        }
+        
+        if (!string.IsNullOrEmpty(context))
+        {
+            Debug.Log($"Reeling: Cleared all fish data - {context}");
+        }
     }
     
     // Debug methods

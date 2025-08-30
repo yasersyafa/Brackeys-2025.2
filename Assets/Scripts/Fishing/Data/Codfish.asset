@@ -15,7 +15,7 @@ MonoBehaviour:
   fishName: Codfish
   rarity: 1
   fishIcon: {fileID: 0}
-  fishPrefab: {fileID: 2227402159327873520, guid: 3ade6058e02d85948b60a57317d4046f, type: 3}
+  fishPrefab: {fileID: 2227402159327873520, guid: 33210ceb09f7c174c9508a31c4c6f8c9, type: 3}
   baseHP: 100
   strength: 1
   weight: 1

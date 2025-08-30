@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Rare2
+  m_Name: AnglerFish
   m_Shader: {fileID: -6465566751694194690, guid: 427c3d87a65155845830615a4fe3c67d, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -29,11 +29,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BC_rgb_smoothness_a:
-        m_Texture: {fileID: 2800000, guid: d3cd77e6e1ae19f4782b2b6f3c41c86c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 496ec900b87e6be42b7e56a7adcf7410, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: d3cd77e6e1ae19f4782b2b6f3c41c86c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 496ec900b87e6be42b7e56a7adcf7410, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -57,7 +57,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: d3cd77e6e1ae19f4782b2b6f3c41c86c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 496ec900b87e6be42b7e56a7adcf7410, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:

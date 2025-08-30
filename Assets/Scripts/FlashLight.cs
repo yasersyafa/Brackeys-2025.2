@@ -60,7 +60,6 @@ public class FlashLight : MonoBehaviour
 
             if (angle < _flashLight.spotAngle / 2f) // dalam cone cahaya
             {
-                Debug.Log($"Detected: {hit.gameObject.name}");
                 if (hit.TryGetComponent<Anomaly>(out var anomaly))
                 {
                     anomaly.DestroyAnomaly();

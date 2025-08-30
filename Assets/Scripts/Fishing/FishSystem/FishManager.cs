@@ -251,6 +251,23 @@ public class FishManager : MonoBehaviour
         return currentFish != null && !currentFish.isCaught;
     }
     
+    // Clear current fish data (called when bait is reset)
+    public void ClearCurrentFish()
+    {
+        if (debugMode && currentFish != null)
+        {
+            Debug.Log($"FishManager: Clearing current fish: {currentFish.GetDisplayName()}");
+        }
+        
+        currentFish = null;
+        
+        // Hide fish UI
+        if (fishUI != null)
+        {
+            fishUI.SetActive(false);
+        }
+    }
+    
     // Force fish to escape (can be called by other systems)
     public void ForceFishEscape()
     {

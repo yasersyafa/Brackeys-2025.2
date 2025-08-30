@@ -143,11 +143,20 @@ public class FishSpawner : MonoBehaviour
             currentFishGameObject.transform.SetParent(null);
             Destroy(currentFishGameObject);
             currentFishGameObject = null;
-            currentFishData = null;
+        }
+        
+        // Clear fish data
+        currentFishData = null;
+        
+        // Clear fish data from FishManager
+        var fishManager = FindFirstObjectByType<FishManager>();
+        if (fishManager != null)
+        {
+            fishManager.ClearCurrentFish();
         }
         
         if (debugMode)
-            Debug.Log("FishSpawner: Stopped spawning");
+            Debug.Log("FishSpawner: Stopped spawning and cleared fish data");
     }
     
     private IEnumerator SpawnFishRoutine()
@@ -194,7 +203,12 @@ public class FishSpawner : MonoBehaviour
         {
             // Calculate spawn position (around bait in a circle)
             Vector3 spawnPosition = GetRandomSpawnPosition();
-            currentFishGameObject = Instantiate(selectedFish.fishPrefab, spawnPosition, Quaternion.identity);
+            
+            // Calculate rotation to face bait immediately
+            Vector3 directionToBait = (baitTransform.position - spawnPosition).normalized;
+            Quaternion lookRotation = Quaternion.LookRotation(directionToBait);
+            
+            currentFishGameObject = Instantiate(selectedFish.fishPrefab, spawnPosition, lookRotation);
             
             // Setup fish component if it exists
             var fishComponent = currentFishGameObject.GetComponent<FishBehavior>();
@@ -204,7 +218,7 @@ public class FishSpawner : MonoBehaviour
             }
             
             if (debugMode)
-                Debug.Log($"FishSpawner: Spawned {selectedFish.fishName} at {spawnPosition}");
+                Debug.Log($"FishSpawner: Spawned {selectedFish.fishName} at {spawnPosition}, facing bait at {baitTransform.position}");
         }
         else
         {
@@ -335,9 +349,9 @@ public class FishSpawner : MonoBehaviour
         // Set local position relative to bait (x=0, y=0, z=0)
         Vector3 localPosition = Vector3.zero;
         currentFishGameObject.transform.localPosition = localPosition;
-        
-        // Set initial rotation when caught (x=0, y=-180, z=0)
-        Vector3 caughtRotation = new Vector3(0f, -180f, 0f);
+
+        // Set initial rotation when caught (x=0, y=90, z=0)
+        Vector3 caughtRotation = new Vector3(0f, 180f, 0f);
         currentFishGameObject.transform.localRotation = Quaternion.Euler(caughtRotation);
         
         // Use state machine to mark fish as hooked
@@ -403,8 +417,15 @@ public class FishSpawner : MonoBehaviour
             currentFishGameObject = null;
         }
         
-        // Reset for next fish
+        // Clear fish data
         currentFishData = null;
+        
+        // Clear fish data from FishManager
+        var fishManager = FindFirstObjectByType<FishManager>();
+        if (fishManager != null)
+        {
+            fishManager.ClearCurrentFish();
+        }
         
         // Restart spawning if bait is still in water
         if (baitTransform != null)
@@ -419,33 +440,33 @@ public class FishSpawner : MonoBehaviour
     
     private void OnFishStruggleStarted()
     {
-        // Rotate fish to struggle position when struggle starts (x=90, y=-180, z=0)
+        // Rotate fish to struggle position when struggle starts (x=0, y=-90, z=0)
         if (currentFishGameObject != null)
         {
             Vector3 struggleRotation = Vector3.zero;
-            
+
             // Smooth rotation using DOTween
             currentFishGameObject.transform.DOLocalRotate(struggleRotation, 0.5f)
                 .SetEase(Ease.OutQuart);
             
             if (debugMode)
-                Debug.Log("FishSpawner: Fish struggling - rotated to (90, -180, 0)");
+                Debug.Log($"FishSpawner: Fish struggling - rotated to {struggleRotation}");
         }
     }
     
     private void OnFishStruggleEnded()
     {
-        // Rotate fish to all zeros when struggle ends (x=0, y=0, z=0)
+        // Rotate fish back to caught position when struggle ends (x=0, y=180, z=0)
         if (currentFishGameObject != null)
         {
-            Vector3 endRotation = new Vector3(0f, -180f, 0f);
+            Vector3 endRotation = new Vector3(0f, 180f, 0f);
             
             // Smooth rotation using DOTween
             currentFishGameObject.transform.DOLocalRotate(endRotation, 0.3f)
                 .SetEase(Ease.OutQuart);
             
             if (debugMode)
-                Debug.Log("FishSpawner: Fish struggle ended - rotated to (0, 0, 0)");
+                Debug.Log($"FishSpawner: Fish struggle ended - rotated to {endRotation}");
         }
     }
     

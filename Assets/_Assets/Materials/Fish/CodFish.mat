@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Common1
+  m_Name: CodFish
   m_Shader: {fileID: -6465566751694194690, guid: 427c3d87a65155845830615a4fe3c67d, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -29,11 +29,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BC_rgb_smoothness_a:
-        m_Texture: {fileID: 2800000, guid: 871fe6dff4d49e342b2286c5e5c4579e, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6d9281633075e4448aa5b246316d1922, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 871fe6dff4d49e342b2286c5e5c4579e, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6d9281633075e4448aa5b246316d1922, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -57,7 +57,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 871fe6dff4d49e342b2286c5e5c4579e, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6d9281633075e4448aa5b246316d1922, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:

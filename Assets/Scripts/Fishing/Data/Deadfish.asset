@@ -15,7 +15,7 @@ MonoBehaviour:
   fishName: Deadfish
   rarity: 5
   fishIcon: {fileID: 0}
-  fishPrefab: {fileID: 2227402159327873520, guid: 3ade6058e02d85948b60a57317d4046f, type: 3}
+  fishPrefab: {fileID: 2227402159327873520, guid: 609faae293142e84ab852aba407b6e61, type: 3}
   baseHP: 100
   strength: 1
   weight: 1

@@ -98,12 +98,6 @@ public class Bait : MonoBehaviour
                 // Normal reeling behavior
                 HandleContinuousReeling();
             }
-            
-            // Debug bait movement when reeling
-            if (Time.fixedTime % 1f < Time.fixedDeltaTime) // Log every second
-            {
-                Debug.Log($"Bait: Position {transform.position}, IsReeling: {isBeingReeled}, IsStruggling: {isFishStruggling}, HasChildren: {transform.childCount}");
-            }
         }
     }
 
@@ -277,12 +271,20 @@ public class Bait : MonoBehaviour
         rb.linearDamping = originalDrag;
         rb.angularDamping = originalAngularDrag;
         
-        // Stop fish spawning
+        // Stop fish spawning and clear fish data
         var fishSpawner = FindFirstObjectByType<FishSpawner>();
         if (fishSpawner != null)
         {
             fishSpawner.StopSpawning();
-            Debug.Log("Bait: Reset - stopped fish spawning");
+            Debug.Log("Bait: Reset - stopped fish spawning and cleared fish data");
+        }
+        
+        // Clear fish data from FishManager
+        var fishManager = FindFirstObjectByType<FishManager>();
+        if (fishManager != null)
+        {
+            fishManager.ClearCurrentFish();
+            Debug.Log("Bait: Reset - cleared fish data from FishManager");
         }
         
         gameObject.SetActive(false);

@@ -1,9 +1,14 @@
 fileFormatVersion: 2
-guid: e516f5100a42ddf408f52d5adbbcaf21
+guid: 9829711941f8e7e4ea406ac4dabaed9c
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Rare_Fish.001
+    second: {fileID: 2100000, guid: 5350ff0df96f32a4f887472ea2a4c519, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

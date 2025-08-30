@@ -36,12 +36,13 @@ public class FishData : ScriptableObject
     public int GetRotationsToReel()
     {
         float rarityMultiplier = GetRarityMultiplier();
-        float strengthMultiplier = 1f + (strength - 1f) * 0.5f; // Strength affects rotation count
+        // Improved strength scaling: stronger fish require more rotations
+        float strengthMultiplier = 0.5f + (strength * 0.75f); // Scales from 1.25 at strength=1 to higher values
         
         int baseRotations = Random.Range(minRotationsToReel, maxRotationsToReel + 1); // Random rotations within range
         int finalRotations = Mathf.RoundToInt(baseRotations * rarityMultiplier * strengthMultiplier);
         
-        return Mathf.Clamp(finalRotations, minRotationsToReel, maxRotationsToReel * 2);
+        return Mathf.Clamp(finalRotations, minRotationsToReel, maxRotationsToReel * 3); // Allow higher max for strong fish
     }
     
     // Calculate weight using new formula: w = random.randint(1, 4)
