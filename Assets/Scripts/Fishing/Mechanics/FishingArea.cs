@@ -3,8 +3,10 @@ using UnityEngine.InputSystem;
 
 public class FishingArea : MonoBehaviour
 {
+
     [Header("Bait Casting")]
     [SerializeField] private GameObject baitGameObject;
+    [SerializeField] private GameObject ropeGameObject;
     [SerializeField] private Transform castPoint;
     [SerializeField] private float castForce = 15f;
     [SerializeField] private float castAngle = 45f;
@@ -21,6 +23,12 @@ public class FishingArea : MonoBehaviour
         if (baitGameObject != null)
         {
             baitScript = baitGameObject.GetComponent<Bait>();
+            
+            // Set the reeling target to the cast point (fishing rod)
+            if (baitScript != null)
+            {
+                baitScript.SetReelingTarget(castPoint);
+            }
         }
 
         // If no cast point is assigned, use this transform
@@ -44,7 +52,7 @@ public class FishingArea : MonoBehaviour
             else if (isBaitCast)
             {
                 // If bait is already cast, reel it back in
-                ReelInBait();
+                ResetBait();
             }
         }
 
@@ -64,6 +72,7 @@ public class FishingArea : MonoBehaviour
     {
         // 1. Set active the bait gameObject
         baitGameObject.SetActive(true);
+        ropeGameObject.SetActive(true);
         baitUI.SetActive(true);
         
         // Position bait at cast point
@@ -81,13 +90,7 @@ public class FishingArea : MonoBehaviour
         Debug.Log("Bait cast!");
     }
 
-    private void ReelingBait()
-    {
-        // Pass a string argument for completedWord, e.g., an empty string or a relevant word
-        baitScript.ReelingMove("");
-    }
-
-    private void ReelInBait()
+    public void ResetBait()
     {
         if (baitScript != null)
         {
@@ -95,6 +98,7 @@ public class FishingArea : MonoBehaviour
         }
 
         baitGameObject.SetActive(false);
+        ropeGameObject.SetActive(false);
         baitUI.SetActive(false);
         isBaitCast = false;
         Debug.Log("Bait reeled in!");
