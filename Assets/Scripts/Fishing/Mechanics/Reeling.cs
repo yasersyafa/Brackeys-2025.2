@@ -65,6 +65,9 @@ public class Reeling : MonoBehaviour
     private bool isSpinning = false;
     private bool isReelingActive = false;
     
+    // Audio variables
+    private bool wasSpinningLastFrame = false;
+    
     // Reel stress variables
     private float currentReelStress = 0f;
     private bool reelBroken = false;
@@ -159,6 +162,7 @@ public class Reeling : MonoBehaviour
         UpdateReelStress();
         UpdateProgress();
         UpdateWheelScale(); // Update wheel scaling based on progress
+        UpdateSpinningAudio(); // Handle spinning sound effects
         UpdateUI();
     }
     
@@ -172,6 +176,7 @@ public class Reeling : MonoBehaviour
         currentReelStress = 0f; // Reset reel stress
         reelBroken = false; // Reset reel state
         needleAngle = 0f; // Reset needle angle
+        wasSpinningLastFrame = false; // Reset audio state
         
         // Initialize mouse position to current position to prevent false spinning detection
         Mouse mouse = Mouse.current;
@@ -247,6 +252,13 @@ public class Reeling : MonoBehaviour
     private void StopReeling(Fish fish)
     {
         isReelingActive = false;
+        
+        // Kill spinning audio if it's playing
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.ForceKillAudio(11);
+        }
+        wasSpinningLastFrame = false; // Reset audio state
         
         // Kill any running DOTween sequences
         wheelSpinSequence?.Kill();
@@ -458,6 +470,31 @@ public class Reeling : MonoBehaviour
             .SetEase(Ease.OutCubic);
     }
     
+    private void UpdateSpinningAudio()
+    {
+        // Check if spinning state changed
+        if (isSpinning && !wasSpinningLastFrame)
+        {
+            // Started spinning - play looping sound
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySound(11, 0.6f); // Play looping spinning sound
+            }
+        }
+        else if (!isSpinning && wasSpinningLastFrame)
+        {
+            // Stopped spinning - kill the sound
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.ForceKillAudio(11); // Force kill spinning sound effect
+                Debug.Log("Killing spinning sound effect");
+            }
+        }
+        
+        // Update last frame state
+        wasSpinningLastFrame = isSpinning;
+    }
+    
     private void CompleteRotation()
     {
         totalRotations += 1f;
@@ -466,6 +503,22 @@ public class Reeling : MonoBehaviour
         // Check if we've completed enough rotations
         if (totalRotations >= targetRotations)
         {
+            // Immediately stop spinning to prevent audio system from restarting it
+            isSpinning = false;
+            currentSpinSpeed = 0f;
+            
+            // Multiple attempts to kill the audio
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.ForceKillAudio(11); // Force kill spinning sound effect
+                AudioManager.Instance.StopAudio(11); // Also try regular stop
+                AudioManager.Instance.KillAudioSfx(11); // Also try SFX kill
+            }
+            wasSpinningLastFrame = false; // Reset audio state
+            
+            // Force update audio system to detect the change
+            UpdateSpinningAudio();
+            
             // Catch the fish when target rotations reached
             var fishManager = FindFirstObjectByType<FishManager>();
             if (fishManager != null && fishManager.GetCurrentFish() != null)
@@ -705,6 +758,13 @@ public class Reeling : MonoBehaviour
     {
         reelBroken = true;
         isReelingActive = false;
+        
+        // Kill spinning audio if it's playing
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.ForceKillAudio(11);
+        }
+        wasSpinningLastFrame = false; // Reset audio state
         
         Debug.Log("Reel broke! Fish escaped and bait reset!");
         

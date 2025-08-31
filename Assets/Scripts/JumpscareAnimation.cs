@@ -6,7 +6,8 @@ public class JumpscareAnimation : MonoBehaviour
 {
     [Header("UI Settings")]
     [SerializeField] private GameObject jumpscarePanel;
-    [SerializeField] private float panelDisplayDuration = 2f;
+    [SerializeField] private GameObject gameOverPanel;
+    [SerializeField] private float panelDisplayDuration = 3f;
     
     [Header("Camera Settings")]
     [SerializeField] private Camera[] targetCameras; // Array of cameras to shake
@@ -108,6 +109,7 @@ public class JumpscareAnimation : MonoBehaviour
     /// </summary>
     public void JumpscareAnim()
     {
+        AudioManager.Instance.PlaySound(8, 1f);
         // Fire the event first
         OnJumpscareStart?.Invoke();
         
@@ -125,7 +127,7 @@ public class JumpscareAnimation : MonoBehaviour
         // Then start camera shake effect
         StartCameraShake();
         
-        // Auto-hide panel after duration
+        // Auto-hide panel after duration and show game over panel
         if (jumpscarePanel != null)
         {
             DOVirtual.DelayedCall(panelDisplayDuration, () => 
@@ -134,6 +136,17 @@ public class JumpscareAnimation : MonoBehaviour
                 {
                     jumpscarePanel.SetActive(false);
                     Debug.Log("Jumpscare panel deactivated!");
+                }
+                
+                // Activate game over panel after jumpscare ends
+                if (gameOverPanel != null)
+                {
+                    gameOverPanel.SetActive(true);
+                    // freeze the game
+                    Time.timeScale = 0f;
+                    // stop all audio
+                    AudioManager.Instance.StopAllAudio();
+                    Debug.Log("Game Over panel activated after jumpscare!");
                 }
             });
         }
@@ -223,7 +236,7 @@ public class JumpscareAnimation : MonoBehaviour
         // Start custom camera shake
         StartCustomCameraShake(customIntensity, customDuration);
         
-        // Auto-hide panel after duration (use the longer of the two durations)
+        // Auto-hide panel after duration (use the longer of the two durations) and show game over panel
         float totalDuration = Mathf.Max(panelDisplayDuration, customDuration);
         if (jumpscarePanel != null)
         {
@@ -233,6 +246,13 @@ public class JumpscareAnimation : MonoBehaviour
                 {
                     jumpscarePanel.SetActive(false);
                     Debug.Log("Jumpscare panel deactivated!");
+                }
+                
+                // Activate game over panel after jumpscare ends
+                if (gameOverPanel != null)
+                {
+                    gameOverPanel.SetActive(true);
+                    Debug.Log("Game Over panel activated after custom jumpscare!");
                 }
             });
         }
@@ -330,15 +350,16 @@ public class JumpscareAnimation : MonoBehaviour
     /// </summary>
     public void StopJumpscareAnimation()
     {
+        gameOverPanel.SetActive(true);
         if (activeCameras != null)
         {
             for (int i = 0; i < activeCameras.Length; i++)
             {
                 if (activeCameras[i] == null) continue;
-                
+
                 Camera cam = activeCameras[i];
                 cam.transform.DOKill();
-                
+
                 // Reset both position and rotation to original values
                 if (i < originalCameraPositions.Length && originalCameraPositions[i] != Vector3.zero)
                 {
@@ -349,7 +370,7 @@ public class JumpscareAnimation : MonoBehaviour
                     cam.transform.eulerAngles = originalCameraRotations[i];
                 }
             }
-            
+
             Debug.Log($"Jumpscare animation stopped for {activeCameras.Length} camera(s)!");
         }
     }

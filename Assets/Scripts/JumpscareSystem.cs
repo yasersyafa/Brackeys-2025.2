@@ -32,7 +32,7 @@ public class JumpscareSystem : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        Instance = this;
+        
         
         // Randomize jumpscare present time between 8-15 seconds for both conditions
         anomalyJumpscarePresent = Random.Range(8f, 15f);
@@ -88,6 +88,12 @@ public class JumpscareSystem : MonoBehaviour
         isAnomalyPresent = true;
         jumpscareTriggeredForAnomaly = false;
         
+        // Play looping anomaly present sound
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlaySfxLoop(1, 0.5f); // Play looping anomaly sound as SFX
+        }
+        
         // Stop existing timer if running
         if (anomalyTimerCoroutine != null)
         {
@@ -106,6 +112,13 @@ public class JumpscareSystem : MonoBehaviour
         isAnomalyPresent = false;
         anomalyTimer = 0f;
         jumpscareTriggeredForAnomaly = false;
+        
+        // Stop anomaly present sound and play destroy sound
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.KillAudioSfx(1); // Stop anomaly sound (as SFX)
+            AudioManager.Instance.PlaySound(2, 0.7f); // Play anomaly destroy sound
+        }
         
         // Stop timer
         if (anomalyTimerCoroutine != null)

@@ -16,6 +16,14 @@ public class GeneratorQTE : MonoBehaviour
 
     [Header("Generator Objects (akan di-enable/disable)")]
     public GameObject[] generatorObjects;
+    
+    [Header("Audio Settings")]
+    public Transform generatorAudioSource; // Reference GameObject for 3D audio positioning
+    public float audioCheckInterval = 0.5f; // How often to check audio distance (seconds)
+    public float maxAudioDistance = 10f; // Maximum distance to hear generator audio
+    
+    private bool isGeneratorAudioPlaying = false;
+    private Coroutine audioCheckCoroutine;
 
     [Header("QTE Settings")]
     public float totalDuration = 15f;
@@ -46,6 +54,10 @@ public class GeneratorQTE : MonoBehaviour
             SetGeneratorState(true); // Generator ON saat awal
             if (generatorOnCoroutine != null) StopCoroutine(generatorOnCoroutine);
             generatorOnCoroutine = StartCoroutine(GeneratorOnTimer());
+            
+            // Start audio distance checking
+            if (audioCheckCoroutine != null) StopCoroutine(audioCheckCoroutine);
+            audioCheckCoroutine = StartCoroutine(AudioDistanceChecker());
         }
 
     void Update()
@@ -197,6 +209,26 @@ public class GeneratorQTE : MonoBehaviour
             }
         }
         
+        // Handle 3D audio with generator state changes
+        if (AudioManager.Instance != null && generatorAudioSource != null)
+        {
+            if (on)
+            {
+                // Generator turned ON - the AudioDistanceChecker will handle starting the audio based on proximity
+                // Reset audio state
+                isGeneratorAudioPlaying = false;
+                Debug.Log("Generator turned ON - Audio will be managed by distance checker");
+            }
+            else
+            {
+                // Generator turned OFF - stop loop and play shutdown sound
+                AudioManager.Instance.KillAudioSfx(7); // Stop looping generator sound
+                AudioManager.Instance.PlaySound3D(5, 0.6f, generatorAudioSource); // Play generator shutdown sound
+                isGeneratorAudioPlaying = false;
+                Debug.Log("Generator turned OFF - Audio stopped");
+            }
+        }
+        
         // Fire events when state changes
         if (wasOn && !on)
         {
@@ -216,5 +248,47 @@ public class GeneratorQTE : MonoBehaviour
         float duration = UnityEngine.Random.Range(60f, 121f);
         yield return new WaitForSeconds(duration);
         SetGeneratorState(false);
+    }
+    
+    IEnumerator AudioDistanceChecker()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(audioCheckInterval);
+            
+            // Only check if generator is on and we have audio source
+            if (isGeneratorOn && generatorAudioSource != null && AudioManager.Instance != null)
+            {
+                var player = FindFirstObjectByType<PlayerMovement>();
+                if (player != null)
+                {
+                    float distance = Vector3.Distance(player.transform.position, generatorAudioSource.position);
+                    
+                    // If player is within range and audio not playing, start it
+                    if (distance <= maxAudioDistance && !isGeneratorAudioPlaying)
+                    {
+                        AudioManager.Instance.PlaySfxLoop3D(7, 0.4f, generatorAudioSource);
+                        isGeneratorAudioPlaying = true;
+                        Debug.Log($"Generator audio started - Distance: {distance:F1}");
+                    }
+                    // If player is out of range and audio is playing, stop it
+                    else if (distance > maxAudioDistance && isGeneratorAudioPlaying)
+                    {
+                        AudioManager.Instance.KillAudioSfx(7);
+                        isGeneratorAudioPlaying = false;
+                        Debug.Log($"Generator audio stopped - Distance: {distance:F1}");
+                    }
+                }
+            }
+            // If generator is off, ensure audio is stopped
+            else if (!isGeneratorOn && isGeneratorAudioPlaying)
+            {
+                if (AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.KillAudioSfx(7);
+                }
+                isGeneratorAudioPlaying = false;
+            }
+        }
     }
 }

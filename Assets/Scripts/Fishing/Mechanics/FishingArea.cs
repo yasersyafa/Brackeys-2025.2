@@ -1,3 +1,4 @@
+using Hellmade.Sound;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -75,6 +76,7 @@ public class FishingArea : MonoBehaviour
 
     private void CastBait()
     {
+        AudioManager.Instance.PlaySound(10, 0.8f);
         // 1. Set active the bait gameObject\
         panelFishing.SetActive(false);
         baitGameObject.SetActive(true);
@@ -103,6 +105,8 @@ public class FishingArea : MonoBehaviour
         {
             baitScript.ResetBait();
         }
+
+        AudioManager.Instance.ForceKillAudio(11); // Force kill spinning sound effect
 
         baitGameObject.SetActive(false);
         ropeGameObject.SetActive(false);

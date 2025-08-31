@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using Hellmade.Sound;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -33,16 +34,35 @@ public class PlayerMovement : MonoBehaviour
 
     // Tambahan: flag idle di area flashlight
     private bool isIdleInFlashlightArea = false;
+    
+    // Audio variables for walking
+    private bool wasMovingLastFrame = false;
+    private float walkingAudioDelay = 0f;
+    private const float WALKING_AUDIO_DELAY_TIME = 1f;
 
     void Start()
     {
         if (agent == null) agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = true;
         MoveToArea(currentArea);
+        wasMovingLastFrame = false; // Initialize walking audio state
+        walkingAudioDelay = 0f; // Initialize walking audio delay
+        
+        // Don't stop ambient music, just ensure music (0) is playing
+        if (AudioManager.Instance != null)
+        {
+            if (!AudioManager.Instance.IsMusicPlaying(0))
+            {
+                AudioManager.Instance.PlayMusic(0, 0.6f);
+            }
+        }
     }
 
     void Update()
     {
+        // Update walking audio
+        UpdateWalkingAudio();
+        
         // Smooth rotasi manual setelah sampai tujuan
         if (isRotatingToTarget)
         {
@@ -102,5 +122,40 @@ public class PlayerMovement : MonoBehaviour
         if (panelFlashlight != null) panelFlashlight.SetActive(false);
         if (panelFishing != null) panelFishing.SetActive(false);
         if (panelGenerator != null) panelGenerator.SetActive(false);
+    }
+    
+    private void UpdateWalkingAudio()
+    {
+        // Check if agent is currently moving
+        bool isMoving = agent.hasPath && agent.remainingDistance > agent.stoppingDistance && agent.velocity.magnitude > 0.1f;
+        
+        // Update delay timer
+        if (walkingAudioDelay > 0f)
+        {
+            walkingAudioDelay -= Time.deltaTime;
+        }
+        
+        // Check if moving state changed
+        if (isMoving && !wasMovingLastFrame)
+        {
+            // Started moving - play looping walking sound with delay
+            if (walkingAudioDelay <= 0f && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlaySfxLoop(12, 0.4f); // Play looping walking sound as SFX
+                walkingAudioDelay = WALKING_AUDIO_DELAY_TIME; // Set delay before next play
+            }
+        }
+        else if (!isMoving && wasMovingLastFrame)
+        {
+            // Stopped moving - kill the walking sound
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.KillAudioSfx(12); // Kill walking sound as SFX only
+            }
+            walkingAudioDelay = 0f; // Reset delay when stopping
+        }
+        
+        // Update last frame state
+        wasMovingLastFrame = isMoving;
     }
 }

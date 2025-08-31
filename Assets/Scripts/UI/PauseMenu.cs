@@ -48,8 +48,8 @@ public class PauseMenu : MonoBehaviour
 
     public void ExitToMainMenu()
     {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene("_MainMenu");
+        // go out from the appliaction
+        Application.Quit();
     }
 
     private void AddButtonHoverEffect(Button button)

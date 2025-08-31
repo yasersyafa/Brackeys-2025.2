@@ -8,6 +8,8 @@ public class MainMenu : MonoBehaviour
     {
         // Ganti "GameScene" dengan nama scene utama Anda
         SceneManager.LoadScene("_MainScene");
+        // Pause the game
+        Time.timeScale = 1f;
     }
 
     // Fungsi untuk tombol Exit
