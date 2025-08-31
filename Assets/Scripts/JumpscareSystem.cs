@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class JumpscareSystem : MonoBehaviour
 {
@@ -33,6 +34,10 @@ public class JumpscareSystem : MonoBehaviour
             return;
         }
         
+        Instance = this; // Fix: Assign the instance
+        
+        // Subscribe to scene loaded event to reset system when scene reloads
+        SceneManager.sceneLoaded += OnSceneLoaded;
         
         // Randomize jumpscare present time between 8-15 seconds for both conditions
         anomalyJumpscarePresent = Random.Range(8f, 15f);
@@ -43,6 +48,12 @@ public class JumpscareSystem : MonoBehaviour
             Debug.Log($"JumpscareSystem: Anomaly jumpscare time set to {anomalyJumpscarePresent:F1} seconds");
             Debug.Log($"JumpscareSystem: Generator jumpscare time set to {generatorJumpscarePresent:F1} seconds");
         }
+    }
+    
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Reset the jumpscare system when a new scene is loaded
+        ResetJumpscareSystem();
     }
 
     void Start()
@@ -70,6 +81,9 @@ public class JumpscareSystem : MonoBehaviour
 
     void OnDestroy()
     {
+        // Unsubscribe from scene loaded event to prevent memory leaks
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        
         // Unsubscribe from events to prevent memory leaks
         AnomalySpawner.OnAnomalySpawned -= OnAnomalySpawned;
         AnomalySpawner.OnAnomalyDestroyed -= OnAnomalyDestroyed;
@@ -294,6 +308,50 @@ public class JumpscareSystem : MonoBehaviour
             Debug.Log("JumpscareSystem: All timers reset");
             Debug.Log($"JumpscareSystem: New anomaly jumpscare time: {anomalyJumpscarePresent:F1}s");
             Debug.Log($"JumpscareSystem: New generator jumpscare time: {generatorJumpscarePresent:F1}s");
+        }
+    }
+    
+    /// <summary>
+    /// Resets the entire jumpscare system for a new game/scene
+    /// </summary>
+    public void ResetJumpscareSystem()
+    {
+        // Stop all running coroutines
+        if (anomalyTimerCoroutine != null)
+        {
+            StopCoroutine(anomalyTimerCoroutine);
+            anomalyTimerCoroutine = null;
+        }
+        if (generatorTimerCoroutine != null)
+        {
+            StopCoroutine(generatorTimerCoroutine);
+            generatorTimerCoroutine = null;
+        }
+        
+        // Reset all state variables to initial values
+        anomalyTimer = 0f;
+        generatorOffTimer = 0f;
+        isAnomalyPresent = false; // Important: no anomaly present at start
+        isGeneratorOn = true; // Generator starts as ON
+        jumpscareTriggeredForAnomaly = false;
+        jumpscareTriggeredForGenerator = false;
+        
+        // Generate new random jumpscare times
+        anomalyJumpscarePresent = Random.Range(8f, 15f);
+        generatorJumpscarePresent = Random.Range(8f, 15f);
+        
+        // Stop any anomaly audio that might be playing
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.KillAudioSfx(1); // Stop anomaly sound
+        }
+        
+        if (enableDebugLogs)
+        {
+            Debug.Log("JumpscareSystem: Complete system reset for new game");
+            Debug.Log($"JumpscareSystem: New anomaly jumpscare time: {anomalyJumpscarePresent:F1}s");
+            Debug.Log($"JumpscareSystem: New generator jumpscare time: {generatorJumpscarePresent:F1}s");
+            Debug.Log($"JumpscareSystem: Initial state - Anomaly Present: {isAnomalyPresent}, Generator On: {isGeneratorOn}");
         }
     }
 

@@ -4,6 +4,7 @@ using TMPro;
 using System;
 using UnityEngine.InputSystem;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class Reeling : MonoBehaviour
 {
@@ -116,6 +117,15 @@ public class Reeling : MonoBehaviour
         playerCamera = Camera.main;
         if (playerCamera == null)
             playerCamera = FindFirstObjectByType<Camera>();
+            
+        // Subscribe to scene loaded event to reset reeling system when scene reloads
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+    
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Reset the reeling system when a new scene is loaded
+        ResetReelingSystem();
     }
     
     void OnEnable()
@@ -127,6 +137,9 @@ public class Reeling : MonoBehaviour
     
     void OnDestroy()
     {
+        // Unsubscribe from scene loaded event to prevent memory leaks
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        
         // Clean up DOTween sequences
         wheelSpinSequence?.Kill();
         uiUpdateSequence?.Kill();
@@ -758,11 +771,13 @@ public class Reeling : MonoBehaviour
     {
         reelBroken = true;
         isReelingActive = false;
-        
+
         // Kill spinning audio if it's playing
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.ForceKillAudio(11);
+            AudioManager.Instance.StopAudio(11);
+            AudioManager.Instance.KillAudioSfx(11);
         }
         wasSpinningLastFrame = false; // Reset audio state
         
@@ -951,6 +966,109 @@ public class Reeling : MonoBehaviour
         {
             Debug.Log($"Reeling: Cleared all fish data - {context}");
         }
+    }
+    
+    /// <summary>
+    /// Resets the entire reeling system for a new game/scene
+    /// </summary>
+    public void ResetReelingSystem()
+    {
+        // Stop any active reeling
+        isReelingActive = false;
+        
+        // Kill spinning audio if it's playing
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.ForceKillAudio(11);
+            AudioManager.Instance.StopAudio(11);
+            AudioManager.Instance.KillAudioSfx(11);
+        }
+        
+        // Reset all reeling state variables
+        totalRotations = 0f;
+        currentRotation = 0f;
+        currentSpinSpeed = 0f;
+        isSpinning = false;
+        currentReelStress = 0f;
+        reelBroken = false;
+        needleAngle = 0f;
+        wasSpinningLastFrame = false;
+        
+        // Reset fish struggle state
+        isFishStruggling = false;
+        struggleTimer = 0f;
+        lastStruggleCheck = 0f;
+        
+        // Reset dynamic variables
+        currentFishWeight = 1f;
+        currentFishStrength = 1f;
+        stressNotSpinningTime = 0f;
+        dynamicStressIncreaseRate = baseStressIncreaseRate;
+        dynamicStressDecreaseRate = baseStressDecreaseRate;
+        dynamicProgressFillRate = progressFillRate;
+        smoothProgressFillValue = 1f;
+        
+        // Reset mouse tracking
+        Mouse mouse = Mouse.current;
+        if (mouse != null)
+        {
+            lastMousePosition = mouse.position.ReadValue();
+        }
+        wheelCenter = Vector2.zero;
+        
+        // Kill any running DOTween sequences
+        wheelSpinSequence?.Kill();
+        uiUpdateSequence?.Kill();
+        wheelScaleSequence?.Kill();
+        wheelShakeSequence?.Kill();
+        DOTween.Kill(this);
+        
+        // Reset UI elements if they exist
+        if (reelingWheel != null)
+        {
+            reelingWheel.localScale = Vector3.one;
+            reelingWheel.rotation = Quaternion.identity;
+            if (originalWheelPosition != Vector2.zero)
+            {
+                reelingWheel.anchoredPosition = originalWheelPosition;
+            }
+        }
+        
+        if (spinningNeedle != null)
+        {
+            spinningNeedle.rotation = Quaternion.identity;
+        }
+        
+        if (progressFill != null)
+        {
+            progressFill.value = 1f;
+        }
+        
+        if (reelStressFill != null)
+        {
+            reelStressFill.value = 0f;
+        }
+        
+        if (progressBar != null)
+        {
+            progressBar.value = 0f;
+        }
+        
+        if (progressText != null)
+        {
+            progressText.text = $"Rotations: 0 / {targetRotations}";
+        }
+        
+        // Hide reeling UI
+        if (reelingCanvas != null)
+        {
+            reelingCanvas.SetActive(false);
+        }
+        
+        // Clear all fish data
+        ClearAllFishData("reeling system reset");
+        
+        Debug.Log("Reeling system reset for new game!");
     }
     
     // Debug methods
