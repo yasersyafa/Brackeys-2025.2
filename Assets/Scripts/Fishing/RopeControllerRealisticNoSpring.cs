@@ -20,8 +20,8 @@ public class RopeControllerRealisticNoSpring : MonoBehaviour
     //Rope data
     private float ropeSectionLength = 0.5f;
 
-    private Color c1 = Color.red;
-    private Color c2 = Color.blue;
+    private Color c1 = Color.white;
+    private Color c2 = Color.white;
 
     private void Start()
     {
